@@ -63,3 +63,10 @@ input {
 body {
     overflow:hidden;
 }
+
+// Turn off spinners
+input[type=number] { 
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    margin: 0; 
+}

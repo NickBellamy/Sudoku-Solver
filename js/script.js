@@ -24,7 +24,15 @@ document.getElementById('solve').addEventListener("click", solve);
 function solve() {
     for(i = 1; i <= 9; i++) {
         for(j = 1; j <= 9; j++) {
+            if(!isSolved(i, j)) {
+            //removeCandidatesInRow)(i, j);
+            //removeCandidatesInCol(i, j);
+            //removeCandidatesInGroup(i, j);
             checkForSingleCandidate(i, j);
+
+            // Debug log
+            console.log(i.toString() + ":" + j.toString());
+            }
         }
     }
 }
@@ -38,4 +46,9 @@ function checkForSingleCandidate(row, col) {
     if (candidates.length == 1) {
         document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value = candidates[0];
     }
+}
+
+// Returns true if input has a numerical value
+function isSolved(row, col) {
+    return document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value ? true: false;
 }
