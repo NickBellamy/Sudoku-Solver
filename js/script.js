@@ -24,8 +24,18 @@ document.getElementById('solve').addEventListener("click", solve);
 function solve() {
     for(i = 1; i <= 9; i++) {
         for(j = 1; j <= 9; j++) {
-            // Debug log
-            console.log(document.querySelector('[data-row="' + i + '"][data-col="' + j + '"]'));
+            checkForSingleCandidate(i, j);
         }
+    }
+}
+
+// If there is only one candidate at location, set that input's value to the candidate
+function checkForSingleCandidate(row, col) {
+    // Select location depending on row and col
+    let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
+    // Parse JSON
+    candidates = JSON.parse(location.dataset.candidates);
+    if (candidates.length == 1) {
+        document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value = candidates[0];
     }
 }
