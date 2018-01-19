@@ -16,5 +16,16 @@ function removeCandidate(row, col, value) {
     console.log(document.querySelectorAll('[data-row="' + row + '"], [data-col="' + col + '"]')[0]);
 }
 
-// Test code
-removeCandidate(4, 4, 8);
+// Event listeners for buttons
+document.getElementById('solve').addEventListener("click", solve);
+
+
+// Iterate through inputs trying to solve
+function solve() {
+    for(i = 1; i <= 9; i++) {
+        for(j = 1; j <= 9; j++) {
+            // Debug log
+            console.log(document.querySelector('[data-row="' + i + '"][data-col="' + j + '"]'));
+        }
+    }
+}
