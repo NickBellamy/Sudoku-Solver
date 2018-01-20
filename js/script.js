@@ -1,3 +1,5 @@
+// Event listeners for buttons
+document.getElementById('solve').addEventListener("click", solve);
 
 // Remove value from candidates at location (row/col)
 function removeCandidate(row, col, value) {
@@ -13,25 +15,40 @@ function removeCandidate(row, col, value) {
     document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = result;
     
     // Debug log
+    console.log("Removed candidate " + value + " at " + row + ":" + col +"!");
+}
+
+// Remove all candidates at location except value
+function removeOtherCandidates(row, col) {
+    let value = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value;
+    document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = '[' + value + ']';
+
+    // Debug log
+    console.log("Emptied all but " + value + " at " + row + ":" + col +"!");
     console.log(document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]'));
 }
 
-// Event listeners for buttons
-document.getElementById('solve').addEventListener("click", solve);
-
-
 // Iterate through inputs trying to solve
 function solve() {
+    // Iterate through grid removing call candidates in solved inputs
+    for(i = 1; i <= 9; i++) {
+        for(j = 1; j <= 9; j++) {
+            if(isSolved(i, j)) {
+                removeOtherCandidates(i, j);
+            }
+        }
+    }
+    // Iterate through grid trying to solve unsolved inputs
     for(i = 1; i <= 9; i++) {
         for(j = 1; j <= 9; j++) {
             if(!isSolved(i, j)) {
-            //removeCandidatesInRow)(i, j);
-            //removeCandidatesInCol(i, j);
-            //removeCandidatesInGroup(i, j);
-            checkForSingleCandidate(i, j);
+                // TODO removeCandidatesInRow)(i, j);
+                // TODO removeCandidatesInCol(i, j);
+                // TODO removeCandidatesInGroup(i, j);
+                checkForSingleCandidate(i, j);
 
-            // Debug log
-            console.log(i.toString() + ":" + j.toString());
+                // Debug log
+                console.log("Solve attempted at " + i + ":" + j +"!");
             }
         }
     }
