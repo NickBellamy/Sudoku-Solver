@@ -16,14 +16,6 @@ document.querySelectorAll('input[type=number]').forEach(function(inp) {
 
 // Iterate through inputs trying to solve
 function solve() {
-    // Iterate through grid removing call candidates in solved inputs
-    for(i = 1; i <= 9; i++) {
-        for(j = 1; j <= 9; j++) {
-            if(isSolved(i, j)) {
-                removeOtherCandidates(i, j);
-            }
-        }
-    }
     // Iterate through grid trying to solve unsolved inputs
     for(i = 1; i <= 9; i++) {
         for(j = 1; j <= 9; j++) {
