@@ -1,5 +1,14 @@
-// Event listeners for buttons
+// Event listeners for inputs
 document.getElementById('solve').addEventListener("click", solve);
+document.querySelectorAll('input[type=number]').forEach(function(inp) {
+    inp.addEventListener('change', function() {
+        this.dataset.candidates = '[' + this.value + ']';
+
+        // Debug log
+        console.log(this);
+    });
+});
+
 
 // Remove value from candidates at location (row/col)
 function removeCandidate(row, col, value) {
@@ -18,15 +27,18 @@ function removeCandidate(row, col, value) {
     console.log("Removed candidate " + value + " at " + row + ":" + col +"!");
 }
 
-// Remove all candidates at location except value
-function removeOtherCandidates(row, col) {
-    let value = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value;
-    document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = '[' + value + ']';
+/* removeOtherCandidates() not currently needed
+but I'm leaving the code in here in case I need it later! */
 
-    // Debug log
-    console.log("Emptied all but " + value + " at " + row + ":" + col +"!");
-    console.log(document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]'));
-}
+// // Remove all candidates at location except value
+// function removeOtherCandidates(row, col) {
+//     let value = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value;
+//     document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = '[' + value + ']';
+
+//     // Debug log
+//     console.log("Emptied all but " + value + " at " + row + ":" + col +"!");
+//     console.log(document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]'));
+// }
 
 // Iterate through inputs trying to solve
 function solve() {
