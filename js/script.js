@@ -39,8 +39,32 @@ function solve() {
     }
 }
 
-eliminateCorrespondingCandidates(row, col) {
-    // TODO eliminate candidates in group
+function eliminateCorrespondingCandidates(row, col) {
+    
+    /* Eliminate candidates in group */
+
+    // Get value at location
+    let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
+    let value = location.value;
+    // Get parent
+    let parentDiv = (location.parentElement);
+    // Get all siblings
+    let inputCollection = parentDiv.children;
+    console.log(inputCollection);
+    // Convert HTMLCollection to an array
+    let inputArray = Array.from(inputCollection);
+    console.log(inputArray);
+    // Remove solved inputs from array
+    let result = inputArray.filter(element => !(isSolved(element.dataset.row, element.dataset.col)));
+    console.log(result);
+    // Remove value from remaining candidates
+    result.forEach(function(element){
+        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(value));
+    })
+    // Debug log
+    console.log(result);
+
+
     // TODO eliminate candidates in row
     // TODO eliminate candidates in col
 
