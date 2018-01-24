@@ -16,31 +16,42 @@ document.querySelectorAll('input[type=number]').forEach(function (inp) {
 
 // Iterate through inputs trying to solve
 function solve() {
-    // Handle solved inputs
-    for (i = 1; i <= 9; i++) {
-        for (j = 1; j <= 9; j++) {
-            // If solved, eliminate corresponding candidates in other positions
-            if (isSolved(i, j)) {
-                eliminateCorrespondingCandidates(i, j);
-            }
-        }
-    }
-    // Handle unsolved inputs
-    for (i = 1; i <= 9; i++) {
-        for (j = 1; j <= 9; j++) {
-            // If unsolved, attempt to solve
-            if (!isSolved(i, j)) {
-                checkForSingleCandidate(i, j);
+    let solveFoundThisLoop = false;
+    do {
+        // Reset flag
+        solveFoundThisLoop = false;
 
-                // Debug log
-                console.log('Solve attempted at ' + i + ':' + j + '!');
+        // Handle solved inputs
+        for (i = 1; i <= 9; i++) {
+            for (j = 1; j <= 9; j++) {
+                // If solved, eliminate corresponding candidates in other positions
+                if (isSolved(i, j)) {
+                    eliminateCorrespondingCandidates(i, j);
+                }
             }
         }
-    }
+
+        // Handle unsolved inputs
+        for (i = 1; i <= 9; i++) {
+            for (j = 1; j <= 9; j++) {
+                // If unsolved, attempt to solve
+                if (!isSolved(i, j)) {
+                    // Solve input if there's only one candidate
+                    trySolveForSingleCandidate(i, j);
+                    // If solveFoundThisLoop is false and a new solution has been found, set solveFoundThisLoop to true
+                    if (!solveFoundThisLoop && isSolved(i, j)) {
+                        solveFoundThisLoop = true;
+                    }
+                }
+            }
+        }
+        // Debug Log
+        console.log("Loop complete!  hasBeenSolved is: " + solveFoundThisLoop);
+    } while (solveFoundThisLoop);
 }
 
 function eliminateCorrespondingCandidates(row, col) {
-    
+
     /* Eliminate candidates in group */
 
     // Get value at location
@@ -50,19 +61,14 @@ function eliminateCorrespondingCandidates(row, col) {
     let parentDiv = (location.parentElement);
     // Get all siblings
     let inputCollection = parentDiv.children;
-    console.log(inputCollection);
     // Convert HTMLCollection to an array
     let inputArray = Array.from(inputCollection);
-    console.log(inputArray);
     // Remove solved inputs from array
     let result = inputArray.filter(element => !(isSolved(element.dataset.row, element.dataset.col)));
-    console.log(result);
     // Remove value from remaining candidates
-    result.forEach(function(element){
+    result.forEach(function (element) {
         removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(value));
     })
-    // Debug log
-    console.log(result);
 
 
     // TODO eliminate candidates in row
@@ -82,19 +88,19 @@ function removeCandidate(row, col, value) {
     let result = JSON.stringify(candidates);
     // Update data-candidates attribute at location
     document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = result;
-
-    // Debug log
-    console.log('Removed candidate ' + value + ' at ' + row + ':' + col + '!');
 }
 
-// If there is only one candidate at location, set that input's value to the candidate
-function checkForSingleCandidate(row, col) {
+// If there is only one candidate at location, set that input's value to the candidate and return true
+function trySolveForSingleCandidate(row, col) {
     // Select location depending on row and col
     let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
     // Parse JSON
     candidates = JSON.parse(location.dataset.candidates);
     if (candidates.length == 1) {
         document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value = candidates[0];
+        return true;
+    } else {
+        return false;
     }
 }
 
