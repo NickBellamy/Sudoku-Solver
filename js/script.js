@@ -4,8 +4,8 @@
 document.getElementById('solve').addEventListener('click', solve);
 
 // Event listener for all inputs
-document.querySelectorAll('input[type=number]').forEach(function(inp) {
-    inp.addEventListener('change', function() {
+document.querySelectorAll('input[type=number]').forEach(function (inp) {
+    inp.addEventListener('change', function () {
         // Set this input's candidates to only this input's value
         this.dataset.candidates = '[' + this.value + ']';
 
@@ -16,20 +16,34 @@ document.querySelectorAll('input[type=number]').forEach(function(inp) {
 
 // Iterate through inputs trying to solve
 function solve() {
-    // Iterate through grid trying to solve unsolved inputs
-    for(i = 1; i <= 9; i++) {
-        for(j = 1; j <= 9; j++) {
-            if(!isSolved(i, j)) {
-                // TODO removeCandidatesInRow)(i, j);
-                // TODO removeCandidatesInCol(i, j);
-                // TODO removeCandidatesInGroup(i, j);
-                checkForSingleCandidate(i, j);
-
-                // Debug log
-                console.log('Solve attempted at ' + i + ':' + j +'!');
+    // Handle solved inputs
+    for (i = 1; i <= 9; i++) {
+        for (j = 1; j <= 9; j++) {
+            // If solved, eliminate corresponding candidates in other positions
+            if (isSolved(i, j)) {
+                eliminateCorrespondingCandidates(i, j);
             }
         }
     }
+    // Handle unsolved inputs
+    for (i = 1; i <= 9; i++) {
+        for (j = 1; j <= 9; j++) {
+            // If unsolved, attempt to solve
+            if (!isSolved(i, j)) {
+                checkForSingleCandidate(i, j);
+
+                // Debug log
+                console.log('Solve attempted at ' + i + ':' + j + '!');
+            }
+        }
+    }
+}
+
+eliminateCorrespondingCandidates(row, col) {
+    // TODO eliminate candidates in group
+    // TODO eliminate candidates in row
+    // TODO eliminate candidates in col
+
 }
 
 // Remove value from candidates at location (row/col)
@@ -44,9 +58,9 @@ function removeCandidate(row, col, value) {
     let result = JSON.stringify(candidates);
     // Update data-candidates attribute at location
     document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = result;
-    
+
     // Debug log
-    console.log('Removed candidate ' + value + ' at ' + row + ':' + col +'!');
+    console.log('Removed candidate ' + value + ' at ' + row + ':' + col + '!');
 }
 
 // If there is only one candidate at location, set that input's value to the candidate
@@ -62,7 +76,7 @@ function checkForSingleCandidate(row, col) {
 
 // Returns true if input has a numerical value
 function isSolved(row, col) {
-    return document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value ? true: false;
+    return document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value ? true : false;
 }
 
 
