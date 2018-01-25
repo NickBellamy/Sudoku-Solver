@@ -52,11 +52,12 @@ function solve() {
 
 function eliminateCorrespondingCandidates(row, col) {
 
-    /* Eliminate candidates in group */
-
-    // Get value at location
+    // Get value location and value
     let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
     let value = location.value;
+    
+    /* Eliminate candidates in group */
+    
     // Get parent
     let parentDiv = (location.parentElement);
     // Get all siblings
@@ -71,7 +72,19 @@ function eliminateCorrespondingCandidates(row, col) {
     })
 
 
-    // TODO eliminate candidates in row
+    /* Eliminate candidates in row */
+
+    // Get all candidates
+    let elementsInRow = document.querySelectorAll('[data-row="' + row + '"]');
+    // Convert to arry
+    let elementsInRowArray = Array.from(elementsInRow);
+    // Remove solved inputs from array
+    let elementsInRowResult = elementsInRowArray.filter(element => !(isSolved(element.dataset.row, element.dataset.col))); 
+    // Remove value from remaining candidates
+    elementsInRowResult.forEach(function (element) {
+        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(value));
+    })
+
     // TODO eliminate candidates in col
 
 }
@@ -88,6 +101,8 @@ function removeCandidate(row, col, value) {
     let result = JSON.stringify(candidates);
     // Update data-candidates attribute at location
     document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = result;
+    // Debug log
+    console.log(value + " removed from " + row + ":" + col);
 }
 
 // If there is only one candidate at location, set that input's value to the candidate and return true
