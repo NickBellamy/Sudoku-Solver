@@ -83,7 +83,7 @@ function removeCandidate(row, col, value) {
     // Convert back into JSON object
     let result = JSON.stringify(candidates);
     // Update data-candidates attribute at location
-    document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = result;
+    location.dataset.candidates = result;
     // Debug log
     console.log(value + " removed from " + row + ":" + col);
 }
