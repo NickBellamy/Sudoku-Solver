@@ -87,6 +87,17 @@ function eliminateCorrespondingCandidates(row, col) {
 
     // TODO eliminate candidates in col
 
+    // Get all candidates
+    let elementsInCol = document.querySelectorAll('[data-col="' + col + '"]');
+    // Convert to arry
+    let elementsInColArray = Array.from(elementsInCol);
+    // Remove solved inputs from array
+    let elementsInColResult = elementsInColArray.filter(element => !(isSolved(element.dataset.row, element.dataset.col))); 
+    // Remove value from remaining candidates
+    elementsInColResult.forEach(function (element) {
+        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(value));
+    })
+
 }
 
 // Remove value from candidates at location (row/col)
