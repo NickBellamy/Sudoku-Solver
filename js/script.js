@@ -52,50 +52,22 @@ function solve() {
 
 function eliminateCorrespondingCandidates(row, col) {
 
-    // Get value location and value
-    let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
-    let value = location.value;
+    // Get value location from row, col
+    const location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
     
-    /* Eliminate candidates in group */
-    
-    // Get parent
-    let parentDiv = (location.parentElement);
-    // Get all siblings
-    let inputCollection = parentDiv.children;
-    // Convert HTMLCollection to an array
-    let inputArray = Array.from(inputCollection);
-    // Remove solved inputs from array
-    let result = inputArray.filter(element => !(isSolved(element.dataset.row, element.dataset.col)));
+    // Array of all elements in row, column, and group
+    let elementsToEliminate = [
+        ...document.querySelectorAll('[data-row="' + row + '"], [data-col="' + col + '"]'),
+        ...location.parentElement.children
+    ]
+
+    // Remove duplicates
+    elementsToEliminate = [...new Set(elementsToEliminate)]
+    // Remove solved inputs
+    elementsToEliminate = elementsToEliminate.filter(element => !(isSolved(element.dataset.row, element.dataset.col)));
     // Remove value from remaining candidates
-    result.forEach(function (element) {
-        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(value));
-    })
-
-
-    /* Eliminate candidates in row */
-
-    // Get all candidates
-    let elementsInRow = document.querySelectorAll('[data-row="' + row + '"]');
-    // Convert to arry
-    let elementsInRowArray = Array.from(elementsInRow);
-    // Remove solved inputs from array
-    let elementsInRowResult = elementsInRowArray.filter(element => !(isSolved(element.dataset.row, element.dataset.col))); 
-    // Remove value from remaining candidates
-    elementsInRowResult.forEach(function (element) {
-        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(value));
-    })
-
-    // TODO eliminate candidates in col
-
-    // Get all candidates
-    let elementsInCol = document.querySelectorAll('[data-col="' + col + '"]');
-    // Convert to arry
-    let elementsInColArray = Array.from(elementsInCol);
-    // Remove solved inputs from array
-    let elementsInColResult = elementsInColArray.filter(element => !(isSolved(element.dataset.row, element.dataset.col))); 
-    // Remove value from remaining candidates
-    elementsInColResult.forEach(function (element) {
-        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(value));
+    elementsToEliminate.forEach(function (element) {
+        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(location.value));
     })
 
 }
