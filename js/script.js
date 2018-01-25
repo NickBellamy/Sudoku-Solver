@@ -94,8 +94,9 @@ function trySolveForSingleCandidate(row, col) {
     let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
     // Parse JSON
     candidates = JSON.parse(location.dataset.candidates);
+    // If only one candidate at location, set location's value
     if (candidates.length == 1) {
-        document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value = candidates[0];
+        location.value = candidates[0];
         return true;
     } else {
         return false;
