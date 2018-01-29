@@ -108,6 +108,18 @@ function isSolved(row, col) {
     return document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value ? true : false;
 }
 
+// Block and column/row interaction
+// https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php
+function blockColRowInteraction() {
+    // For each group
+        // For each number (candidate) between 1-9
+        // Add to an array the row number of the locations within the group
+        // Add to an array the column number of the locations within the group
+        // If all numbers in the row array are equal
+            // Remove this candidate from all inputs that share that row number
+        // If all numbers in the column array are equal
+            // Remove this candidate from all inputs that share that column number
+}
 
 /* removeOtherCandidates() not currently needed
 but I'm leaving the code in here in case I need it later! */
