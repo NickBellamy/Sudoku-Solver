@@ -47,7 +47,7 @@ function solve() {
         }
         // Debug Log
         console.log("Loop complete!  hasBeenSolved is: " + solveFoundThisLoop);
-    } while (solveFoundThisLoop);
+    } while (solveFoundThisLoop && !isSudokuComplete());
 }
 
 function eliminateCorrespondingCandidates(row, col) {
@@ -106,6 +106,23 @@ function trySolveForSingleCandidate(row, col) {
 // Returns true if input has a numerical value
 function isSolved(row, col) {
     return document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value ? true : false;
+}
+
+function isSudokuComplete() {
+    // Get all inputs of type number
+    let results = Array.from(document.querySelectorAll('input[type=number]'));
+    // Filter out any inputs that have no value
+    results = results.filter(element => element.value.length > 0);
+
+    // Debug Log
+    if (results.length === 81) {
+        console.log ("Sudoku Completed!")
+    } else {
+        console.log("Sudoku not completed: only " + results.length + "/81 inputs solved!");
+    }
+
+    // If the results array has 81 members, the sudoku is complete
+    return results.length === 81 ? true : false;
 }
 
 // Block and column/row interaction
