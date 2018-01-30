@@ -48,13 +48,15 @@ function solve() {
         // Debug Log
         console.log("Loop complete!  hasBeenSolved is: " + solveFoundThisLoop);
     } while (solveFoundThisLoop && !isSudokuComplete());
+
+    // TODO Integrate blockColRowInteraction() into the solve
 }
 
 function eliminateCorrespondingCandidates(row, col) {
 
     // Get value location from row, col
     const location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
-    
+
     // Array of all elements in row, column, and group
     let elementsToEliminate = [
         ...document.querySelectorAll('[data-row="' + row + '"], [data-col="' + col + '"]'),
@@ -108,6 +110,7 @@ function isSolved(row, col) {
     return document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value ? true : false;
 }
 
+// Returns true if all inputs have a value
 function isSudokuComplete() {
     // Get all inputs of type number
     let results = Array.from(document.querySelectorAll('input[type=number]'));
@@ -116,7 +119,7 @@ function isSudokuComplete() {
 
     // Debug Log
     if (results.length === 81) {
-        console.log ("Sudoku Completed!")
+        console.log("Sudoku Completed!")
     } else {
         console.log("Sudoku not completed: only " + results.length + "/81 inputs solved!");
     }
@@ -125,17 +128,68 @@ function isSudokuComplete() {
     return results.length === 81 ? true : false;
 }
 
+//TODO Refactor blockColRowInteraction()
+
 // Block and column/row interaction
 // https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php
 function blockColRowInteraction() {
+    // Create an array of all the groups
+    let groups = Array.from(document.getElementsByClassName('group'));
     // For each group
-        // For each number (candidate) between 1-9
-        // Add to an array the row number of the locations within the group
-        // Add to an array the column number of the locations within the group
-        // If all numbers in the row array are equal
-            // Remove this candidate from all inputs that share that row number
-        // If all numbers in the column array are equal
-            // Remove this candidate from all inputs that share that column number
+    groups.forEach(function (group) {
+        // Create an array of all inputs in the group
+        let inputs = Array.from(group.children);
+        //Remove solved candidates
+        inputs = inputs.filter(input => input.value < 1);
+        //For each number (candidate) between 1-9
+        for (let candidate = 1; candidate <= 9; candidate++) {
+            let locations = [];
+
+            inputs.forEach(function (input) {
+                // If the input's candidates contain the candidate
+                if (JSON.parse(input.dataset.candidates).includes(candidate)) {
+                    // Push the data-col value to locations
+                    locations.push([input.dataset.row, input.dataset.col]);
+                }
+            })
+
+            // If all row location values in the array are equal
+            if (locations.every(location => location[0] === locations[0][0]) && locations.length > 1) {
+
+                // Flatten 2D array into 1D array of column locations
+                let colLocations = [];
+                locations.forEach(function (element) {
+                    colLocations.push(parseInt(element[1]));
+                })
+
+                for (let col = 1; col <= 9; col++) {
+                    // If location is not in the current group
+                    if (!colLocations.includes(col)) {
+                        // Remove this candidate from all inputs that share that row number
+                        removeCandidate(locations[0][0], col, candidate);
+                    }
+                }
+            }
+
+            // If all column location values in the array are equal
+            if (locations.every(location => location[1] === locations[0][1]) && locations.length > 1) {
+
+                // Flatten 2D array into 1D array of row locations
+                let rowLocations = [];
+                locations.forEach(function (element) {
+                    rowLocations.push(parseInt(element[0]));
+                })
+
+
+                for (let row = 1; row <= 9; row++) {
+                    if (!rowLocations.includes(row)) {
+                        // Remove this candidate from all inputs that share that col number
+                        removeCandidate(locations[0][1], row, candidate);
+                    }
+                }
+            }
+        }
+    })
 }
 
 /* removeOtherCandidates() not currently needed
