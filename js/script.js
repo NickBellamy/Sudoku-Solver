@@ -21,30 +21,12 @@ function solve() {
         // Reset flag
         solveFoundThisLoop = false;
 
-        // Handle solved inputs
-        for (i = 1; i <= 9; i++) {
-            for (j = 1; j <= 9; j++) {
-                // If solved, eliminate corresponding candidates in other positions
-                if (isSolved(i, j)) {
-                    eliminateCorrespondingCandidates(i, j);
-                }
-            }
-        }
+        // Remove candidates based on solved inputs
+        eliminateCorrespondingCandidates();
 
-        // Handle unsolved inputs
-        for (i = 1; i <= 9; i++) {
-            for (j = 1; j <= 9; j++) {
-                // If unsolved, attempt to solve
-                if (!isSolved(i, j)) {
-                    // Solve input if there's only one candidate
-                    trySolveForSingleCandidate(i, j);
-                    // If solveFoundThisLoop is false and a new solution has been found, set solveFoundThisLoop to true
-                    if (!solveFoundThisLoop && isSolved(i, j)) {
-                        solveFoundThisLoop = true;
-                    }
-                }
-            }
-        }
+        // Try to solve
+        solveFoundThisLoop = trySolve();
+
         // Debug Log
         console.log("Loop complete!  hasBeenSolved is: " + solveFoundThisLoop);
     } while (solveFoundThisLoop && !isSudokuComplete());
@@ -52,26 +34,32 @@ function solve() {
     // TODO Integrate blockColRowInteraction() into the solve
 }
 
-function eliminateCorrespondingCandidates(row, col) {
+// Loop through all solved inputs and remove their values from corresponding candidates
+function eliminateCorrespondingCandidates() {
+    for (row = 1; row <= 9; row++) {
+        for (col = 1; col <= 9; col++) {
+            // If solved, eliminate corresponding candidates in other positions
+            if (isSolved(row, col)) {
+                // Get value location from row, col
+                const location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
 
-    // Get value location from row, col
-    const location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
+                // Array of all elements in row, column, and group
+                let elementsToEliminate = [
+                    ...document.querySelectorAll('[data-row="' + row + '"], [data-col="' + col + '"]'),
+                    ...location.parentElement.children
+                ]
 
-    // Array of all elements in row, column, and group
-    let elementsToEliminate = [
-        ...document.querySelectorAll('[data-row="' + row + '"], [data-col="' + col + '"]'),
-        ...location.parentElement.children
-    ]
-
-    // Remove duplicates
-    elementsToEliminate = [...new Set(elementsToEliminate)]
-    // Remove solved inputs
-    elementsToEliminate = elementsToEliminate.filter(element => !(isSolved(element.dataset.row, element.dataset.col)));
-    // Remove value from remaining candidates
-    elementsToEliminate.forEach(function (element) {
-        removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(location.value));
-    })
-
+                // Remove duplicates
+                elementsToEliminate = [...new Set(elementsToEliminate)]
+                // Remove solved inputs
+                elementsToEliminate = elementsToEliminate.filter(element => !(isSolved(element.dataset.row, element.dataset.col)));
+                // Remove value from remaining candidates
+                elementsToEliminate.forEach(function (element) {
+                    removeCandidate(parseInt(element.dataset.row), parseInt(element.dataset.col), parseInt(location.value));
+                })
+            }
+        }
+    }
 }
 
 // Remove value from candidates at location (row/col)
@@ -90,19 +78,27 @@ function removeCandidate(row, col, value) {
     console.log(value + " removed from " + row + ":" + col);
 }
 
-// If there is only one candidate at location, set that input's value to the candidate and return true
-function trySolveForSingleCandidate(row, col) {
-    // Select location depending on row and col
-    let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
-    // Parse JSON
-    candidates = JSON.parse(location.dataset.candidates);
-    // If only one candidate at location, set location's value
-    if (candidates.length == 1) {
-        location.value = candidates[0];
-        return true;
-    } else {
-        return false;
+// Loop through all locations; if only one candidate at location, set that input's value to the candidate and return true
+function trySolve() {
+    let solutionFound = false;
+    for (row = 1; row <= 9; row++) {
+        for (col = 1; col <= 9; col++) {
+            // If unsolved, attempt to solve
+            if (!isSolved(row, col)) {
+                // Solve input if there's only one candidate
+                // Select location depending on row and col
+                let location = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]');
+                // Parse JSON
+                candidates = JSON.parse(location.dataset.candidates);
+                // If only one candidate at location, set location's value
+                if (candidates.length == 1) {
+                    location.value = candidates[0];
+                    solutionFound = true;
+                }
+            }
+        }
     }
+    return solutionFound;
 }
 
 // Returns true if input has a numerical value
