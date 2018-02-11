@@ -153,38 +153,29 @@ function blockColRowInteraction() {
                 }
             })
 
-            // If all row location values in the array are equal
-            if (locations.every(location => location[0] === locations[0][0]) && locations.length > 1) {
+            // When mode = 0; rows are handled.  When mode = 1; columns are handled
+            for (let mode = 0; mode <= 1; mode++) {
+                // If all line location values in the array are equal
+                if (locations.every(location => location[mode] === locations[0][mode]) && locations.length > 1) {
 
-                // Flatten 2D array into 1D array of column locations
-                let colLocations = [];
-                locations.forEach(function (element) {
-                    colLocations.push(parseInt(element[1]));
-                })
+                    // Flatten 2D array into 1D array of line locations
+                    let lineLocations = [];
+                    locations.forEach(function (element) {
+                        // Math.abs(mode-1) returns 1 when mode = 0, and 0 when mode = 1
+                        lineLocations.push(parseInt(element[Math.abs(mode - 1)]));
+                    })
 
-                for (let col = 1; col <= 9; col++) {
-                    // If location is not in the current group
-                    if (!colLocations.includes(col)) {
-                        // Remove this candidate from all inputs that share that row number
-                        removeCandidate(locations[0][0], col, candidate);
-                    }
-                }
-            }
+                    for (let line = 1; line <= 9; line++) {
+                        if (!lineLocations.includes(line)) {
+                            if (mode === 0) {
+                                // Remove this candidate from all inputs that share that row number
+                                removeCandidate(locations[0][0], line, candidate);
+                            } else {
+                                // Remove this candidate from all inputs that share that column number
+                                removeCandidate(line, locations[0][1], candidate);
+                            }
 
-            // If all column location values in the array are equal
-            if (locations.every(location => location[1] === locations[0][1]) && locations.length > 1) {
-
-                // Flatten 2D array into 1D array of row locations
-                let rowLocations = [];
-                locations.forEach(function (element) {
-                    rowLocations.push(parseInt(element[0]));
-                })
-
-
-                for (let row = 1; row <= 9; row++) {
-                    if (!rowLocations.includes(row)) {
-                        // Remove this candidate from all inputs that share that col number
-                        removeCandidate(locations[0][1], row, candidate);
+                        }
                     }
                 }
             }
