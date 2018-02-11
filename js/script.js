@@ -21,17 +21,25 @@ function solve() {
         // Reset flag
         solveFoundThisLoop = false;
 
-        // Remove candidates based on solved inputs
+        // Eliminate candidates based on solved inputs
         eliminateCorrespondingCandidates();
 
         // Try to solve
         solveFoundThisLoop = trySolve();
 
+        // Only executes if no solve has been found this loop
+        if (!solveFoundThisLoop) {
+            // Eliminate candidates based on block  column/row interaction
+            blockColRowInteraction();
+
+            // Try to solve
+            solveFoundThisLoop = trySolve();
+        }
+
         // Debug Log
         console.log("Loop complete!  hasBeenSolved is: " + solveFoundThisLoop);
     } while (solveFoundThisLoop && !isSudokuComplete());
 
-    // TODO Integrate blockColRowInteraction() into the solve
 }
 
 // Loop through all solved inputs and remove their values from corresponding candidates
