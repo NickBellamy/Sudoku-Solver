@@ -128,8 +128,6 @@ function isSudokuComplete() {
     return results.length === 81 ? true : false;
 }
 
-//TODO Refactor blockColRowInteraction()
-
 // Block and column/row interaction
 // https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php
 function blockColRowInteraction() {
@@ -182,16 +180,3 @@ function blockColRowInteraction() {
         }
     })
 }
-
-/* removeOtherCandidates() not currently needed
-but I'm leaving the code in here in case I need it later! */
-
-// // Remove all candidates at location except value
-// function removeOtherCandidates(row, col) {
-//     let value = document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').value;
-//     document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]').dataset.candidates = '[' + value + ']';
-
-//     // Debug log
-//     console.log('Emptied all but ' + value + ' at ' + row + ':' + col +'!');
-//     console.log(document.querySelector('[data-row="' + row + '"][data-col="' + col + '"]'));
-// }
